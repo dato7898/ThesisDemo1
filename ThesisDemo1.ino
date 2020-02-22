@@ -1,5 +1,6 @@
 #include <FlexiTimer2.h>
 #include <Ultrasonic.h>
+#include <Servo.h>
 Ultrasonic sc(45, 12);
 
 class Driver {
@@ -348,6 +349,8 @@ void Go(char arr[], Robot *robot, double spd = 130, int spdTurn = 130, int timer
 #define L2_pin 2
 #define R2_pin 44
 
+#define SRV A2
+
 Driver *Dr_L = new Driver(DIR1_L, DIR2_L, DIR3_L, DIR4_L, PWM1_L, PWM2_L);
 Driver *Dr_R = new Driver(DIR1_R, DIR2_R, DIR3_R, DIR4_R, PWM1_R, PWM2_R);
 
@@ -359,6 +362,8 @@ Datchik *L2 = new Datchik(L2_pin, 1);
 Datchik *R2 = new Datchik(R2_pin, 1);
 
 Robot *robot = new Robot(pl, L1, R1, L2, R2);
+
+Servo servo;
 
 void test(int DEBUG) {
   if (DEBUG == 0) {
@@ -410,6 +415,7 @@ void test(int DEBUG) {
 //c
 void setup() {
   Serial.begin(9600);
+  servo.attach(SRV);
   FlexiTimer2::set(10, timerInterrupt);
   FlexiTimer2::start();
 }
@@ -420,14 +426,26 @@ void loop() {
   while(sc.Ranging(CM) >= 5){
     robot->Balancing(130);
   }
-  robot->Stop();//здесь должна быть функция бросания мяча
-  delay(1000);
+  dropBall();
+  
   robot->Around(200);
-  Go("Rl",robot,130,200);
-  robot->Stop();
+  
+  Go("l",robot,130,200);
+  while(sc.Ranging(CM) >= 5) {
+    robot->Balancing(130);
+  }
+  dropBall();
+  
   while(1);
 }
 
 void timerInterrupt() {
   robot->Update();
+}
+
+void dropBall() {
+  servo.write(10);
+  delay(500);
+  servo.write(90);
+  delay(2000);
 }
