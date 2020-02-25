@@ -1,7 +1,8 @@
 #include <FlexiTimer2.h>
 #include <Ultrasonic.h>
 #include <Servo.h>
-Ultrasonic sc(45, 12);
+Ultrasonic sc1(45,12);
+Ultrasonic sc2(A2,10);
 
 class Driver {
     int DIR1;
@@ -206,7 +207,7 @@ class Robot {
     }
    
     void Back_Slide() {
-      pl->Back(130, 130);
+      pl->Back(200, 200);
       if (linesState2 != CLEAR) {
         return;
       }
@@ -268,13 +269,13 @@ class Robot {
         pl->turnLeft(spd);
       }
       while (linesState1 != L_LINE) {
-        pl->turnRight(50);
+        pl->turnRight(spd);
       }
       while (linesState1 != R_LINE) {
-        pl->turnLeft(40);
+        pl->turnLeft(spd);
       }
       while (linesState1 != L_LINE) {
-        pl->turnRight(30);
+        pl->turnRight(spd);
       }
     }
 };
@@ -349,7 +350,7 @@ void Go(char arr[], Robot *robot, double spd = 130, int spdTurn = 130, int timer
 #define L2_pin 2
 #define R2_pin 44
 
-#define SRV A2
+#define SRV 9
 
 Driver *Dr_L = new Driver(DIR1_L, DIR2_L, DIR3_L, DIR4_L, PWM1_L, PWM2_L);
 Driver *Dr_R = new Driver(DIR1_R, DIR2_R, DIR3_R, DIR4_R, PWM1_R, PWM2_R);
@@ -422,19 +423,24 @@ void setup() {
 
 void loop() {
   //test(0);
-  Go("R",robot,130,200);
-  while(sc.Ranging(CM) >= 5){
-    robot->Balancing(130);
+  servo.write(90);
+  Go("R",robot,200,250);
+  while(sc1.Ranging(CM)>=5 || sc2.Ranging(CM)>=5){
+    robot->Balancing(200);
   }
+  robot->Stop();
+  delay(1000);
   dropBall();
   
-  robot->Around(200);
+  /*robot->Around(250);
   
-  Go("l",robot,130,200);
-  while(sc.Ranging(CM) >= 5) {
-    robot->Balancing(130);
+  Go("l",robot,200,250);
+  while(sc1.Ranging(CM)>=30 || sc2.Ranging(CM)>=30) {
+    robot->Balancing(200);
   }
-  dropBall();
+  robot->Stop();
+  delay(1000);
+  dropBall();*/
   
   while(1);
 }
