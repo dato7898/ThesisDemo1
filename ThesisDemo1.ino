@@ -366,48 +366,6 @@ Robot *robot = new Robot(pl, L1, R1, L2, R2);
 
 Servo servo;
 
-void test(int DEBUG) {
-  if (DEBUG == 0) {
-    
-    Serial.print("L1: ");
-    Serial.print(L1->flag);
-    Serial.print("\t");
-    Serial.print("R1: ");
-    Serial.print(R1->flag);
-    Serial.print("\t");
-    Serial.print("L2: ");
-    Serial.print(L2->flag);
-    Serial.print("\t");
-    Serial.print("R2: ");
-    Serial.println(R2->flag);
-  }
-  if (DEBUG == 1) {
-     /*
-        digitalWrite(DIR1_L2,HIGH);
-        digitalWrite(DIR2_L2,LOW);
-        digitalWrite(DIR3_L2,HIGH);
-        digitalWrite(DIR4_L2,LOW);
-        analogWrite(PWM1_L2,250);
-        analogWrite(PWM2_L2,250);
-        */
-    //pl->turnRight(130);
-    /*
-      digitalWrite(DIR1, HIGH);
-      digitalWrite(DIR2, LOW);
-      digitalWrite(DIR3, HIGH);
-      digitalWrite(DIR4, LOW);
-      analogWrite(PWM1, spd1);
-      analogWrite(PWM2, spd2);
-    */
-    //Dr_L2->Forward(250, 250);
-    /*
-    Dr_L1->Forward(130, 130);
-    Dr_L2->Forward(130, 130);
-    Dr_R1->Forward(130, 130);
-    Dr_R2->Forward(130, 130);
-    */
-  }
-}
 //R - правая линия
 //L - левая линия
 //С - CROSS
@@ -422,25 +380,24 @@ void setup() {
 }
 
 void loop() {
-  //test(0);
   servo.write(90);
   Go("R",robot,200,250);
-  while(sc1.Ranging(CM)>=5 || sc2.Ranging(CM)>=5){
+  while(sc1.Ranging(CM) >= 3 || sc2.Ranging(CM) >= 3){
     robot->Balancing(200);
   }
   robot->Stop();
   delay(1000);
   dropBall();
   
-  /*robot->Around(250);
+  robot->Around(250);
   
   Go("l",robot,200,250);
-  while(sc1.Ranging(CM)>=30 || sc2.Ranging(CM)>=30) {
+  while(sc1.Ranging(CM) >= 3 || sc2.Ranging(CM) >= 3) {
     robot->Balancing(200);
   }
   robot->Stop();
   delay(1000);
-  dropBall();*/
+  dropBall();
   
   while(1);
 }
